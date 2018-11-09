@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
+  <script type="text/javascript">
+    //Module
+    var myApp = angular.module('myApp', []);
+
+    //Controller
+    myApp.controller('MainCtrl', ['$scope', '$http',
+        function ($scope, $http) {
+    	
+    
+    	  
+    	 $scope.CountryText = "Please Wait..";  
+    	
+            //$http service for Getting the Country
+            $http({
+            	
+                method: 'GET',
+                url: '/getCountries'
+            }).
+            success(function (data) {
+            	$scope.CountryText=" Select Country "
+                $scope.country = data;
+            });
+
+            
+            //$http service for getting Location
+            $scope.GetLocation = function () {
+            	
+             $scope.LocationText = "Please Wait...";
+           
+                if ($scope.countryNameModel) {
+                console.log("countryNameModel  "+$scope.countryNameModel);
+                    $http({
+                        method: 'GET',
+                        url: '/getLocations/'+$scope.countryNameModel,
+                    
+                    }).
+                    success(function (data) {
+                    	$scope.LocationText = "Select Location";
+                        $scope.location= data;
+                        
+
+                    });
+                }
+               
+            }
+            
+            
+            //$http service for getting Departments
+            $scope.GetDepartments = function () {
+            	
+             $scope.DepartmentText = "Please Wait...";
+             
+                if ($scope.LocationNameModel) {
+                	console.log("LocationNameModel  "+$scope.LocationNameModel);
+                    $http({
+                        method: 'GET',
+                        url: '/getDepartments/'+$scope.LocationNameModel,
+                     
+                      
+                    }).
+                    success(function (data) {
+                    	
+                    	$scope.DepartmentText = "Select Department";
+                        $scope.departments = data;
+                       
+
+                    });
+                }
+               
+            }
+            
+            
+        }]);
+</script>
+
+
+  
+<h1>Cascading Dropdown List of Country, State and City</h1>  
+<hr />  
+<br />  
+<div class="row" ng-app="myApp">  
+    <div class="col-lg-3"></div>  
+    <div class="col-lg-6" ng-controller="MainCtrl">  
+  
+        <div class="form-group">  
+            <label class="col-md-4 control-label">Country Name</label>  
+            <div class="col-md-6">  
+        
+                
+                 <select name="Country" ng-model="countryNameModel" ng-change="GetLocation()">
+                        <option value="">--Select Country--</option> 
+                        <option ng-repeat="item in country" value="{{item.countryId}}">
+                            {{item.countryName}}
+                        </option>
+                 </select>
+                
+                <br />  
+            </div>  
+        </div>  
+  
+        <div class="form-group">  
+            <label class="col-md-4 control-label">Location Name</label>  
+            <div class="col-md-6">  
+                <select name="Location" ng-model="LocationNameModel" ng-change="GetDepartments()">
+                        <option value="">--Select Location--</option> 
+                        <option ng-repeat="item in location" value="{{item.locationId}}">
+                            {{item.locationName}}
+                        </option>
+                 </select>  
+                
+                <br />  
+  
+            </div>  
+        </div>
+        
+        
+            <div class="form-group">  
+            <label class="col-md-4 control-label">City Name</label>  
+            <div class="col-md-6">  
+                    <select name="Department" ng-model="DepartmentNameModel" >
+                         <option value="">--Select Department--</option> 
+                        <option ng-repeat="item in departments" value="{{item.departmentId}}">
+                            {{item.departmentName}}
+                        </option>
+                 </select>   
+  
+            </div>  
+        </div>    
+        <br />  
+    
+    </div>  
+    <div class="col-lg-3"></div>  
+</div>  
+</body>
+</html>
